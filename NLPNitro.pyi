@@ -14,7 +14,7 @@ def features(df):
     df['word'] = df['word'].astype(str); #making sure everything is a stirng
     df['word_len'] = df['word'].str.len() #new column for wordlen
 
-    df['punctuation_at_end'] = df['word'].
+
     return df;
 
 # if __name__ == "__main__":
