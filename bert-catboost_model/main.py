@@ -20,7 +20,7 @@ def eval_metric(y_true, preds):
 
 
 # load data and read train_data.csv
-df = pd.read_csv('train_data.csv', encoding='utf-8')
+df = pd.read_csv('train_with_bert.csv', encoding='utf-8')
 print("Data loaded successfully")
 
 
@@ -44,7 +44,7 @@ df['is_punctuation'] = df['word'].astype(str).str.match(r'^[\W_]+$').astype(int)
 # TRAINING
 
 
-features = ['word_length', 'word_index', 'is_punctuation', 'participant_id', 'text']
+features = ['word_length', 'word_index', 'is_punctuation', 'participant_id', 'text', 'bert_feature_0', 'bert_feature_1', 'bert_feature_2', 'bert_feature_3', 'bert_feature_4' ]
 target = 'answer'
 
 df = df.dropna(subset=target)
@@ -75,7 +75,7 @@ print(f"Score: {score:.2f}")
 
 
 # Submission file creation
-test_df = pd.read_csv("test_data.csv", encoding="utf-8")
+test_df = pd.read_csv("test_with_bert.csv", encoding="utf-8")
 
 test_df['word_length'] = test_df['word'].astype(str).str.len()
 test_df['word_index'] = test_df['word_id'].apply(lambda x: int(str(x).split('_')[-1]))
