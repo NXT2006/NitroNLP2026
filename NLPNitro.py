@@ -13,7 +13,9 @@ pd.set_option('display.width', 1000)
 def loadingDataFromCSV():
     print("Loading data from train_data.csv")
     train = pd.read_csv("train_data.csv")
-    return train
+    print("Loading data from test_data.csv")
+    test = pd.read_csv("test_data.csv")
+    return train, test
 
 
 def features(df):
@@ -45,15 +47,23 @@ def calculate_score(y_true, y_pred):
 
 
 if __name__ == "__main__":
-    train_df = loadingDataFromCSV()
+    train_df, test_df = loadingDataFromCSV()
     train_df = features(train_df)
+    test_df = features(test_df)
+
+    # print("\n--- FULL TRAINING DATA VIEW ---")
+    # print(train_df.head(10))
+    #
+    # print("\n--- COLUMN SUMMARY ---")
+    # print(train_df.info())
+    # print(train_df.groupby('is_punctuation')['answer'].mean())
 
     print("\n--- FULL TRAINING DATA VIEW ---")
-    print(train_df.head(10))
+    print(test_df.head(10))
 
-    print("\n--- COLUMN SUMMARY ---")
-    print(train_df.info())
-    print(train_df.groupby('is_punctuation')['answer'].mean())
+    # print("\n--- COLUMN SUMMARY ---")
+    # print(test_df.info())
+    # print(test_df.groupby('is_punctuation')['answer'].mean())
 
     features_list = ['word_len', 'is_punctuation', 'word_freq', 'word_log_freq', 'syllable_count', 'word_index', 'is_proper_noun']
     X = train_df[features_list]
@@ -70,6 +80,20 @@ if __name__ == "__main__":
 
     final_score = calculate_score(y_val, val_predictions)
     print(f"\n YOUR CURRENT SCORE: {final_score:.2f} / 100")
+
+    print("\nPredicting reading times for the real test data...")
+    X_test_final = test_df[features_list]
+    real_test_predictions = model.predict(X_test_final)
+
+    real_test_predictions = np.maximum(0, real_test_predictions)
+
+    submission = pd.DataFrame({
+        'subtaskID': 1,
+        'datapointID': test_df['datapointID'],
+        'answer': real_test_predictions
+    })
+    submission.to_csv('submission.csv', index=False)
+    print("'submission.csv' is ready to upload.")
 
 
 
