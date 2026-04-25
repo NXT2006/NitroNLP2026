@@ -26,6 +26,7 @@ def features(df):
     df['is_proper_noun'] = ((df['word'].str.istitle()) & (df['word_index'] > 0)).astype(int)
     return df;
 
+
 if __name__ == "__main__":
     train_df = loadingDataFromCSV()
     train_df = features(train_df)
