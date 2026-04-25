@@ -19,26 +19,17 @@ def features(df):
 
     df['word'] = df['word'].fillna(""); #handling empty space in the csv file
     df['word'] = df['word'].astype(str); #making sure everything is a stirng
-    df['word_len'] = df['word'].str.replace(r'[^\w\s]', '', regex=True).str.len() #new column for wordlen
+
+    df['word_len'] = df['word'].str.len() #new column for wordlen
     marks = ('.', ',', '!', '?', ';', ':')
     df['is_punctuation'] = df['word'].str.endswith(marks).astype(int) #checking for punctuation at the end
     counts = df['word'].value_counts() #storing word counts
     df['word_freq'] = df['word'].map(counts.to_dict())
     df['word_log_freq'] = np.log1p(df['word_freq'])
     df['syllable_count'] = df['word'].str.count(r'[aeiouăîâAEIOUĂÎÂ]') #more syllables = longer to read/prnounce
-    df['word_index'] = df['word_id'].str.split('_').str[-1].fillna(0).astype(int);
+    df['word_index'] = df['word_id'].str.split('_').str[-1].fillna(0).astype(int) #checking the word index on the page
     df['is_proper_noun'] = ((df['word'].str.istitle()) & (df['word_index'] > 0)).astype(int)
     return df;
-
-
-def calculate_score(y_true, y_pred):
-    r2 = max(0, r2_score(y_true, y_pred))
-
-    pearson = np.abs(pearsonr(y_true, y_pred)[0])
-    if np.isnan(pearson): pearson = 0
-
-    return 100 * (r2 + pearson) / 2
-
 
 if __name__ == "__main__":
     train_df, test_df = loadingDataFromCSV()
@@ -51,11 +42,12 @@ if __name__ == "__main__":
     X = train_df[features_list]
     y = train_df['answer']
     X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.01, random_state=42)
-    print("Training....")
+    print("Training")
     model = xgb.XGBRegressor(n_estimators=100, learning_rate=0.1, max_depth=6, random_state=42)
 
     model.fit(X_train, y_train)
-    print("Training complete!")
+
+    print("Training completed!")
 
     X_test_final = test_df[features_list]
     real_test_predictions = model.predict(X_test_final)
