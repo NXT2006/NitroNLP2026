@@ -41,7 +41,7 @@ if __name__ == "__main__":
     features_list = ['word_len', 'is_punctuation', 'word_freq', 'word_log_freq', 'syllable_count', 'word_index', 'is_proper_noun']
     X = train_df[features_list]
     y = train_df['answer']
-    X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.01, random_state=42)
+    X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, random_state=42)
     print("Training")
     model = xgb.XGBRegressor(n_estimators=100, learning_rate=0.1, max_depth=6, random_state=42)
 

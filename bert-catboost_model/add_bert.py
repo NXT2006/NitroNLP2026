@@ -175,7 +175,7 @@ else:
 train_df['surprisal'] = train_surprisal
 test_df['surprisal']  = test_surprisal
 
-N_COMPONENTS = 32
+N_COMPONENTS = 128
 pca = PCA(n_components=N_COMPONENTS, random_state=42)
 train_compressed = pca.fit_transform(train_embeds)
 test_compressed  = pca.transform(test_embeds)
